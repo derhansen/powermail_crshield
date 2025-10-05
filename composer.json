@@ -1,0 +1,44 @@
+{
+    "name": "derhansen/powermail_crshield",
+    "type": "typo3-cms-extension",
+    "description": "Challenge/response spambot protection for TYPO3 ext:powermail",
+    "homepage": "https://github.com/derhansen/powermail_crshield",
+    "support": {
+        "issues": "https://github.com/derhansen/powermail_crshield/issues"
+    },
+    "authors": [
+        {
+            "name": "Torben Hansen",
+            "email": "derhansen@gmail.com",
+            "homepage": "https://www.derhansen.com",
+            "role": "Developer"
+        }
+    ],
+    "keywords": [
+        "TYPO3 CMS",
+        "powermail",
+        "spam protection",
+        "challenge response",
+        "extbase"
+    ],
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "require": {
+        "typo3/cms-core": "^12.4",
+        "in2code/powermail": "^12.5"
+    },
+    "replace": {
+        "typo3-ter/powermail-crshield": "self.version"
+    },
+    "autoload": {
+        "psr-4": {
+            "Derhansen\\PowermailCrshield\\": "Classes"
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "powermail_crshield"
+        }
+    }
+}

@@ -1,0 +1,18 @@
+plugin.tx_powermail {
+    view {
+        templateRootPaths {
+            9880 = EXT:powermail_crshield/Resources/Private/Templates
+        }
+        partialRootPaths {
+            9880 = EXT:powermail_crshield/Resources/Private/Partials
+        }
+    }
+    settings.setup.spamshield.methods {
+        9880 {
+            _enable = 1
+            name = Challenge/response spambot shield
+            class = Derhansen\PowermailCrshield\Domain\Validator\Spamshield\ChallengeResponseShield
+            indication = 7
+        }
+    }
+}

@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Derhansen\PowermailCrshield\:
+    resource: '../Classes/*'
+
+  Derhansen\PowermailCrshield\Service\ChallengeResponseService:
+    public: true
