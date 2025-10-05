@@ -1,4 +1,4 @@
-[![Latest Stable Version](https://poser.pugx.org/derhansen/form_crshield/v/stable)](https://packagist.org/packages/derhansen/form_crshield)
+[![Latest Stable Version](https://poser.pugx.org/derhansen/powermail_crshield/v/stable)](https://packagist.org/packages/derhansen/powermail_crshield)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 Challenge/response spam shield for TYPO3 ext:powermail
