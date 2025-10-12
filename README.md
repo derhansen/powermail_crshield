@@ -105,6 +105,7 @@ snippet to implement the challenge/response protection in their own forms (e.g. 
 
 | Version | TYPO3 | PHP       | Support/Development                  |
 |---------|-------|-----------|--------------------------------------|
+| 2.x     | 13.4  | 8.2 - 8.4 | Features, Bugfixes, Security Updates |
 | 1.x     | 12.4  | 8.1 - 8.4 | Features, Bugfixes, Security Updates |
 
 ## Extensions using the challenge/response algorithm

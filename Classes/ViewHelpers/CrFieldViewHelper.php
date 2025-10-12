@@ -12,18 +12,24 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Fluid\ViewHelpers\Form\AbstractFormFieldViewHelper;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Cache\CacheLifetimeCalculator;
+use TYPO3\CMS\Frontend\Page\PageInformation;
 
 class CrFieldViewHelper extends AbstractFormFieldViewHelper
 {
     private const FIELDNAME = 'field[crfield]';
 
     protected $tagName = 'input';
+    private int $currentTimestamp;
+    private int $cacheTimeOutDefault = 86400;
+    private array $settings;
 
     public function __construct(
         private readonly ChallengeResponseService $challengeResponseService,
         private readonly Context $context
     ) {
+        $this->currentTimestamp = $this->context->getPropertyFromAspect('date', 'timestamp');
+        $this->settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('powermail_crshield');
         parent::__construct();
     }
 
@@ -42,11 +48,10 @@ class CrFieldViewHelper extends AbstractFormFieldViewHelper
         $form = $this->arguments['form'];
         $salt = FormSaltUtility::getFormSalt($form);
 
-        $extensionSettings = $this->getExtensionSettings();
         $challenge = $this->challengeResponseService->getChallenge(
-            (string)($extensionSettings['obfuscationMethod'] ?? '1'),
+            (string)($this->settings['obfuscationMethod'] ?? '1'),
             $this->getPageExpirationTime(),
-            (int)($extensionSettings['crJavaScriptDelay'] ?? 3),
+            (int)($this->settings['crJavaScriptDelay'] ?? 3),
             $salt
         );
 
@@ -79,37 +84,43 @@ class CrFieldViewHelper extends AbstractFormFieldViewHelper
         return $this->getRequest()->getMethod() === 'POST' && $extbaseRequest && $extbaseRequest->getControllerExtensionName() === 'Powermail' &&
             $extbaseRequest->getControllerActionName() === 'confirmation';
     }
-    
-    private function getPageExpirationTime(): int
-    {
-        $currentTimestamp = $this->context->getPropertyFromAspect('date', 'timestamp');
 
-        /** @var TypoScriptFrontendController $tsfe */
-        $tsfe = $this->getRequest()->getAttribute('frontend.controller') ?? $GLOBALS['TSFE'];
-        // TSFE to not contains a valid page record?!
-        if (!$tsfe || !is_array($tsfe->page)) {
+    protected function getPageExpirationTime(): int
+    {
+        $pageRecord = $this->getPageRecord();
+        if ($pageRecord === []) {
             return 0;
         }
-        $timeOutTime = $tsfe->get_cache_timeout();
 
-        // If page has a endtime before the current timeOutTime, use it instead:
-        if ($tsfe->page['endtime']) {
-            $endtimePage = (int)($tsfe->page['endtime']) - $currentTimestamp;
-            if ($endtimePage && $endtimePage < $timeOutTime) {
-                $timeOutTime = $endtimePage;
-            }
+        $timeOutTime = $this->getCacheTimeout();
+        if ($timeOutTime < (int)($this->settings['minimumPageExpirationTime'] ?? 900)) {
+            $timeOutTime += (int)($this->settings['additionalPageExpirationTime'] ?? 3600);
         }
 
-        $extensionSettings = $this->getExtensionSettings();
-        if ($timeOutTime < (int)($extensionSettings['minimumPageExpirationTime'] ?? 900)) {
-            $timeOutTime += (int)($extensionSettings['additionalPageExpirationTime'] ?? 3600);
-        }
-
-        return $timeOutTime + $currentTimestamp;
+        return $timeOutTime + $this->currentTimestamp;
     }
 
-    private function getExtensionSettings(): array
+    /**
+     * Get the cache timeout for the current page (taken 1:1 from TypoScriptFrontendController)
+     */
+    protected function getCacheTimeout(): int
     {
-        return GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('powermail_crshield');
+        $pageInformation = $this->getRequest()->getAttribute('frontend.page.information');
+        $typoScriptConfigArray = $this->getRequest()->getAttribute('frontend.typoscript')->getConfigArray();
+        return GeneralUtility::makeInstance(CacheLifetimeCalculator::class)
+            ->calculateLifetimeForPage(
+                $pageInformation->getId(),
+                $pageInformation->getPageRecord(),
+                $typoScriptConfigArray,
+                $this->cacheTimeOutDefault,
+                $this->context
+            );
+    }
+
+    protected function getPageRecord(): array
+    {
+        /** @var PageInformation $pageInformation */
+        $pageInformation = $this->getRequest()->getAttribute('frontend.page.information');
+        return $pageInformation->getPageRecord();
     }
 }

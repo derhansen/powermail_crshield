@@ -25,8 +25,8 @@
         "GPL-2.0-or-later"
     ],
     "require": {
-        "typo3/cms-core": "^12.4",
-        "in2code/powermail": "^12.5"
+        "typo3/cms-core": "^13.4",
+        "in2code/powermail": "^13.0"
     },
     "replace": {
         "typo3-ter/powermail-crshield": "self.version"
