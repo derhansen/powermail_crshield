@@ -115,6 +115,10 @@ The following extensions use the challenge/response algorithm:
 * https://github.com/derhansen/form_crshield
 * https://github.com/derhansen/powermail_crshield
 
+## Reporting a Vulnerability
+
+Please report vulnerabilities to [security@typo3.org](mailto:security@typo3.org).
+
 ## Thanks for sponsoring
 
 * Thanks to [DMS Deutsche Möbelspedition GmbH & Co. KG](https://www.dms-logistik.de/) for supporting my open source work on this extension
