@@ -17,6 +17,11 @@ class ChallengeResponseShield extends AbstractMethod implements LoggerAwareInter
 
     public function spamCheck(): bool
     {
+        if ($this->isOptinConfirmation()) {
+            $this->logger->debug('Forwarded response from optin confirmation. Skipping spam check.');
+            return false;
+        }
+
         $challengeResponseService = GeneralUtility::makeInstance(ChallengeResponseService::class);
         $this->logger->debug(
             'Submitted data',
@@ -27,5 +32,24 @@ class ChallengeResponseShield extends AbstractMethod implements LoggerAwareInter
         $salt = FormSaltUtility::getFormSalt($form);
         $crFieldValue = $this->arguments['field']['crfield'] ?? '';
         return $challengeResponseService->isValidResponse($crFieldValue, $salt) === false;
+    }
+
+    /**
+     * A successful Powermail double optin results in a forward response to the createAction. This results in
+     * calling all validations again, which is unfortunate, because they all already have been executed during
+     * the creation of the initial email. This function checks, if we have a valid optin confirmation and returns
+     * true, if so.
+     */
+    private function isOptinConfirmation(): bool
+    {
+        if (isset($this->arguments['hash']) &&
+            ($this->arguments['action'] ?? '') === 'optinConfirm' &&
+            (int)($this->arguments['mail'] ?? 0) === $this->mail->getUid() &&
+            $this->mail->getHidden() === false
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
