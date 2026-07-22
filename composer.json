@@ -12,12 +12,6 @@
             "email": "derhansen@gmail.com",
             "homepage": "https://www.derhansen.com",
             "role": "Developer"
-        },
-        {
-            "name": "Krzysztof Napora",
-            "email": "k.napora@drblitz-weblab.com",
-            "homepage": "https://drblitz-weblab.com",
-            "role": "Contributor"
         }
     ],
     "keywords": [
@@ -31,7 +25,7 @@
         "GPL-2.0-or-later"
     ],
     "require": {
-        "typo3/cms-core": "^14.0",
+        "typo3/cms-core": "^14.3",
         "in2code/powermail": "^14.0"
     },
     "replace": {
@@ -44,7 +38,11 @@
     },
     "extra": {
         "typo3/cms": {
-            "extension-key": "powermail_crshield"
+            "extension-key": "powermail_crshield",
+            "version": "3.0.0",
+            "Package": {
+                "providesPackages": []
+            }
         }
     }
 }

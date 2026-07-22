@@ -105,8 +105,9 @@ snippet to implement the challenge/response protection in their own forms (e.g. 
 
 | Version | TYPO3 | PHP       | Support/Development                  |
 |---------|-------|-----------|--------------------------------------|
-| 2.x     | 13.4  | 8.2 - 8.4 | Features, Bugfixes, Security Updates |
-| 1.x     | 12.4  | 8.1 - 8.4 | Features, Bugfixes, Security Updates |
+| 3.x     | 14.3  | 8.2 - 8.5 | Features, Bugfixes, Security Updates |
+| 2.x     | 13.4  | 8.2 - 8.5 | Features, Bugfixes, Security Updates |
+| 1.x     | 12.4  | 8.1 - 8.4 | Bugfixes, Security Updates           |
 
 ## Extensions using the challenge/response algorithm
 
@@ -122,3 +123,4 @@ Please report vulnerabilities to [security@typo3.org](mailto:security@typo3.org)
 ## Thanks for sponsoring
 
 * Thanks to [DMS Deutsche Möbelspedition GmbH & Co. KG](https://www.dms-logistik.de/) for supporting my open source work on this extension
+* Thanks to [Krzysztof Napora from Dr Blitz-Weblab Sp. z o.o. ](https://drblitz-weblab.com/) for providing TYPO3 14.3 support
