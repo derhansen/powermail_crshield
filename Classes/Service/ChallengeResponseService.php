@@ -6,19 +6,19 @@ namespace Derhansen\PowermailCrshield\Service;
 
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Crypto\HashService;
 
 class ChallengeResponseService
 {
     public function __construct(
         protected readonly LoggerInterface $logger,
-        protected readonly Context $context
-    ) {
-    }
+        protected readonly Context $context,
+        protected readonly HashService $hashService
+    ) {}
 
     public function getChallenge(string $method, int $expirationTime, int $delay, string $salt): string
     {
-        return $method . '|' . $expirationTime . '|' . GeneralUtility::hmac((string)$expirationTime, $salt) . '|' .
+        return $method . '|' . $expirationTime . '|' . $this->hashService->hmac((string)$expirationTime, $salt) . '|' .
             $delay;
     }
 
@@ -42,7 +42,7 @@ class ChallengeResponseService
         }
 
         [$method, $expirationTime, $clientData] = explode('|', $decodedResponse);
-        $knownHmac = GeneralUtility::hmac($expirationTime, $salt);
+        $knownHmac = $this->hashService->hmac($expirationTime, $salt);
         $calculatedData = $this->getCalculatedData($knownHmac, $method);
 
         if ($calculatedData !== $clientData) {

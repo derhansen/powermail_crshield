@@ -21,7 +21,6 @@ class CrFieldViewHelper extends AbstractFormFieldViewHelper
 
     protected $tagName = 'input';
     private int $currentTimestamp;
-    private int $cacheTimeOutDefault = 86400;
     private array $settings;
 
     public function __construct(
@@ -107,12 +106,14 @@ class CrFieldViewHelper extends AbstractFormFieldViewHelper
     {
         $pageInformation = $this->getRequest()->getAttribute('frontend.page.information');
         $typoScriptConfigArray = $this->getRequest()->getAttribute('frontend.typoscript')->getConfigArray();
+        // TYPO3 v14 dropped the $defaultLifetime (int) argument from
+        // CacheLifetimeCalculator::calculateLifetimeForPage(); the signature is
+        // now (int $pageId, array $pageRecord, array $renderingInstructions, Context $context).
         return GeneralUtility::makeInstance(CacheLifetimeCalculator::class)
             ->calculateLifetimeForPage(
                 $pageInformation->getId(),
                 $pageInformation->getPageRecord(),
                 $typoScriptConfigArray,
-                $this->cacheTimeOutDefault,
                 $this->context
             );
     }
